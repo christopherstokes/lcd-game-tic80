@@ -88,7 +88,7 @@ drop1_frames = [
 	NewFrame(37,20,128)
 ]
 
-// player update
+// Custom Player Update -- defaults to left/right movement
 function PlayerUpdate() {
 	if(btnp(3)) {
 		if(player.current_frame < player.frames.length-1) {
@@ -102,7 +102,7 @@ function PlayerUpdate() {
 	}
 }
 
-// init
+// Initializing Game
 
 for(var i=0; i<20; i++) {
 	var _s = SequenceNew(false,false,false)
