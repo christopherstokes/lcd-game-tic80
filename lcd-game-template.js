@@ -1,23 +1,118 @@
-// title:  game title
+// title:  LCD Game Template
 // author: game developer
 // desc:   short description
 // script: js
 
-var t=0
-var x=96
-var y=24
+// global vars
+var sequences = []
+
+
+// library functions
+function SequenceNew(_s, _frames, _timing) {
+	var s = _s || {}
+	s.frames = _frames || []
+	s.current_frame = 0
+	s.timing = _timing
+	s.last_time = time()
+	s.on = true
+	return s
+}
+
+function SequenceRecycle(_frames, _timing) {
+	for(var i=0; i<sequences.length; i++) {
+		_s = sequences[i]
+		if(_s.on == false) {
+			var s = SequenceNew(_s, _frames, _timing)
+			return s
+		}
+	}
+	var s = SequenceNew(false, _frames, _timing)
+	sequences[sequences.length]=s
+	return s	
+}
+
+function UpdateSequences() {
+	for(var i=0; i<sequences.length; i++) {
+		var _s = sequences[i]
+		if(_s.on) {
+			if(_s.timing) {
+				if(time() - _s.last_time > _s.timing) {
+					_s.last_time = time()
+					_s.current_frame += 1
+					if(_s.current_frame == _s.frames.length) {_s.current_frame=0}
+				}
+			}
+			_s.frames[_s.current_frame].act_cb()
+		}
+	}
+}
+
+function DrawSequences() {
+	for(var i=0; i<sequences.length; i++) {
+		var _s=sequences[i]
+		if(_s.on) {
+			var frame = _s.frames[_s.current_frame]
+			spr(frame.sp, frame.x, frame.y, frame.ck, frame.scl, frame.flp, frame.rot, frame.w/8, frame.h/8)
+		}
+	}
+}
+
+function NewFrame(_sp, _x, _y, _w, _h, _act_cb, _scl, _flp, _rot, _ck) {
+	var _frame = {}
+	_frame.sp=_sp
+	_frame.x=_x
+	_frame.y=_y
+	_frame.w=_w || 8
+	_frame.h=_h || 8
+	_frame.flp=_flp || false
+	_frame.act_cb = _act_cb || function(){return;} // callback action
+	_frame.scl=_scl || 1
+	_frame.ck=_ck || -1
+
+	return _frame
+}
+
+// Frame Sequence Definitions
+player_frames = [
+	NewFrame(1,20,105,16,16),
+	NewFrame(1,52,105,16,16),
+	NewFrame(1,74,105,16,16),
+	NewFrame(1,106,105,16,16)
+]
+
+// player update
+function PlayerUpdate() {
+	if(btnp(3)) {
+		if(player.current_frame < player.frames.length-1) {
+			player.current_frame+=1
+		}
+	}
+	if(btnp(2)) {
+		if(player.current_frame > 0) {
+			player.current_frame-=1
+		}
+	}
+}
+
+// init
+
+for(var i=0; i<20; i++) {
+	var _s = SequenceNew(false,false,false)
+	_s.on = false
+	sequences[sequences.length]=_s
+}
+
+var player=SequenceRecycle(player_frames, false);
 
 function TIC()
 {
-	if(btn(0))y--
-	if(btn(1))y++
-	if(btn(2))x--
-	if(btn(3))x++
+	cls()
+	
+	UpdateSequences()
 
-	cls(13)
-	spr(1+((t%60)/30|0)*2,x,y,14,3,0,0,2,2)
-	print("HELLO WORLD!",84,84)
-	t++
+	PlayerUpdate()
+	
+	DrawSequences()
 }
 
 // <TILES>
