@@ -57,7 +57,7 @@ function DrawSequences() {
 	}
 }
 
-function NewFrame(_sp, _x, _y, _w, _h, _act_cb, _scl, _flp, _rot, _ck) {
+function NewFrame(_sp, _x, _y, _w, _h, _scl, _act_cb, _flp, _rot, _ck) {
 	var _frame = {}
 	_frame.sp=_sp
 	_frame.x=_x
@@ -67,17 +67,25 @@ function NewFrame(_sp, _x, _y, _w, _h, _act_cb, _scl, _flp, _rot, _ck) {
 	_frame.flp=_flp || false
 	_frame.act_cb = _act_cb || function(){return;} // callback action
 	_frame.scl=_scl || 1
-	_frame.ck=_ck || -1
+	_frame.ck=_ck || 0
 
 	return _frame
 }
 
 // Frame Sequence Definitions
 player_frames = [
-	NewFrame(1,20,105,16,16),
-	NewFrame(1,52,105,16,16),
-	NewFrame(1,74,105,16,16),
-	NewFrame(1,106,105,16,16)
+	NewFrame(1,32,105,8,16,2),
+	NewFrame(1,52,105,8,16,2),
+	NewFrame(1,74,105,8,16,2),
+	NewFrame(1,106,105,8,16,2)
+]
+
+drop1_frames = [
+	NewFrame(33,20,0),
+	NewFrame(34,20,32),
+	NewFrame(35,20,64),
+	NewFrame(36,20,96),
+	NewFrame(37,20,128)
 ]
 
 // player update
@@ -103,6 +111,7 @@ for(var i=0; i<20; i++) {
 }
 
 var player=SequenceRecycle(player_frames, false);
+var drop1=SequenceRecycle(drop1_frames, 1000)
 
 function TIC()
 {
@@ -116,14 +125,13 @@ function TIC()
 }
 
 // <TILES>
-// 001:efffffffff222222f8888888f8222222f8fffffff8ff0ffff8ff0ffff8ff0fff
-// 002:fffffeee2222ffee88880fee22280feefff80fff0ff80f0f0ff80f0f0ff80f0f
-// 003:efffffffff222222f8888888f8222222f8fffffff8fffffff8ff0ffff8ff0fff
-// 004:fffffeee2222ffee88880fee22280feefff80ffffff80f0f0ff80f0f0ff80f0f
-// 017:f8fffffff8888888f888f888f8888ffff8888888f2222222ff000fffefffffef
-// 018:fff800ff88880ffef8880fee88880fee88880fee2222ffee000ffeeeffffeeee
-// 019:f8fffffff8888888f888f888f8888ffff8888888f2222222ff000fffefffffef
-// 020:fff800ff88880ffef8880fee88880fee88880fee2222ffee000ffeeeffffeeee
+// 001:000000000000000000aaaa0000444400004444000caaaac0c000000cc004400c
+// 017:c00cc00c06666660006666000066660000888800080000800800008044000044
+// 033:00080000000800000088800008f8880008888800008880000000000000000000
+// 034:0000000000080000008880000888880008f88800008880000008000000000000
+// 035:0000000000080000008880000088800008f88800088888000088800000000000
+// 036:0000000000080000000800000088800000888000008f8000088f880000888000
+// 037:00f00000000000000000080008000000000000000008000008888880888ff888
 // </TILES>
 
 // <WAVES>
